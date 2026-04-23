@@ -1,0 +1,1599 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>경영통계 001분반 중간고사 CBT</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#1e40af;--primary-h:#1d3a8a;--primary-l:#3b82f6;
+  --danger:#dc2626;--success:#16a34a;--warn:#d97706;
+  --bg:#f0f4f8;--white:#ffffff;--border:#e2e8f0;
+  --text:#1e293b;--muted:#64748b;--radius:8px;
+}
+body{font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:15px}
+.screen{display:none}
+.screen.active{display:flex}
+
+/* ===== LOGIN ===== */
+#screen-login{min-height:100vh;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e40af 0%,#60a5fa 100%)}
+.login-card{background:var(--white);border-radius:16px;padding:48px 40px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.18);text-align:center}
+.uni-badge{display:inline-block;background:#eff6ff;color:var(--primary);font-size:12px;font-weight:700;padding:4px 14px;border-radius:20px;margin-bottom:16px;letter-spacing:.05em}
+.login-card h1{font-size:24px;font-weight:800;color:var(--primary);margin-bottom:4px}
+.login-card .subtitle{color:var(--muted);font-size:13px;margin-bottom:32px}
+.form-group{text-align:left;margin-bottom:16px}
+.form-group label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.form-group input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:15px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+.form-group input:focus{border-color:var(--primary-l);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border-radius:var(--radius);font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-primary{background:var(--primary);color:#fff;width:100%;margin-top:8px;font-size:16px}
+.btn-primary:hover{background:var(--primary-h)}
+.error-msg{color:var(--danger);font-size:13px;margin-top:10px;min-height:20px}
+.login-info{margin-top:20px;padding:12px 14px;background:#f8fafc;border-radius:6px;font-size:12px;color:var(--muted);text-align:left;line-height:2}
+.login-title-tri{font-size:15px;font-weight:800;color:var(--primary);margin-bottom:6px;line-height:1.7;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:4px}
+.tri-ko{font-size:18px}
+.tri-en{font-size:13px;color:var(--primary-l)}
+.tri-zh{font-size:13px;color:var(--primary-l)}
+.tri-sep{color:var(--border);font-weight:300;font-size:14px}
+.subtitle-tri{color:var(--muted);font-size:12px;margin-bottom:24px;text-align:center}
+.label-tri{display:block;font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px}
+.label-sub{font-size:11px;color:var(--muted);font-weight:400}
+
+/* ===== LANGUAGE ===== */
+#screen-lang{min-height:100vh;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e40af 0%,#60a5fa 100%)}
+.lang-card{background:var(--white);border-radius:16px;padding:48px 40px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.18)}
+.lang-card h2{font-size:20px;font-weight:800;color:var(--primary);margin-bottom:4px}
+.lang-card p{color:var(--muted);font-size:13px;margin-bottom:32px}
+.lang-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-lang{background:var(--white);border:2px solid var(--border);color:var(--text);min-width:150px;padding:24px 32px;flex-direction:column;gap:8px;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-lang:hover{border-color:var(--primary);color:var(--primary);background:#eff6ff}
+.btn-lang .flag{font-size:40px}
+
+/* ===== EXAM ===== */
+#screen-exam{flex-direction:column;min-height:100vh}
+.exam-header{background:var(--primary);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.header-left{display:flex;flex-direction:column}
+.exam-title-label{font-size:11px;opacity:.75;text-transform:uppercase;letter-spacing:.08em}
+.student-info{font-size:16px;font-weight:700}
+.timer-box{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:3px;background:rgba(255,255,255,.12);padding:8px 20px;border-radius:8px;min-width:110px;text-align:center}
+.timer-box.warn{color:#fbbf24}
+.timer-box.danger{color:#f87171;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.violation-badge{background:rgba(239,68,68,.25);border:1px solid rgba(239,68,68,.5);color:#fca5a5;font-size:11px;padding:3px 10px;border-radius:20px;display:none}
+.violation-badge.show{display:inline-block}
+
+/* Question nav */
+.q-nav{background:var(--white);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.q-nav-label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.05em;margin-right:4px;white-space:nowrap}
+.q-btn{width:34px;height:34px;border-radius:6px;border:1.5px solid var(--border);background:var(--white);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.q-btn:hover{border-color:var(--primary);color:var(--primary)}
+.q-btn.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+.q-btn.done-mcq{background:#dcfce7;border-color:#16a34a;color:#15803d}
+.q-btn.done-mcq.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+.q-btn.done-essay{background:#fef3c7;border-color:var(--warn);color:#92400e}
+.q-btn.done-essay.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+.q-btn.essay-type{border-style:dashed}
+.q-divider{width:1px;height:28px;background:var(--border);margin:0 4px}
+
+/* Main area */
+.exam-main{flex:1;padding:24px;max-width:880px;width:100%;margin:0 auto}
+.q-card{background:var(--white);border-radius:12px;padding:28px 32px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:24px}
+.q-meta{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.q-num{background:var(--primary);color:#fff;font-size:12px;font-weight:800;padding:4px 14px;border-radius:20px}
+.q-chapter{color:var(--muted);font-size:13px;flex:1}
+.q-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.badge-mcq{background:#eff6ff;color:#1d4ed8}
+.badge-essay{background:#fef3c7;color:#92400e}
+.badge-external{background:#dcfce7;color:#15803d}
+.q-text{font-size:15px;line-height:1.85;margin-bottom:20px;white-space:pre-wrap}
+.q-html-content{font-size:15px;line-height:1.85;margin-bottom:20px}
+.q-html-content p{margin-bottom:8px}
+.q-html-content ul{margin-left:20px;margin-bottom:8px}
+.q-html-content li{margin-bottom:4px}
+
+/* Table */
+.data-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.data-table th{background:#f1f5f9;padding:8px 12px;border:1px solid var(--border);text-align:center;font-weight:700}
+.data-table td{padding:8px 12px;border:1px solid var(--border);text-align:center}
+.data-table tr:nth-child(even) td{background:#f8fafc}
+.data-table .outlier{background:#fef3c7;font-weight:700;color:#92400e}
+.data-table .missing{background:#fee2e2;color:#b91c1c;font-style:italic}
+
+/* Notice */
+.external-notice{background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;font-size:13px;color:#15803d;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.lock-notice{background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;font-size:13px;color:#9a3412;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.notice-icon{font-size:16px}
+
+/* MCQ options */
+.options-list{display:flex;flex-direction:column;gap:10px}
+.option-item{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s}
+.option-item:hover{border-color:var(--primary-l);background:#f0f6ff}
+.option-item.sel{border-color:var(--primary);background:#eff6ff}
+.option-marker{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#f1f5f9;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--muted);transition:all .15s}
+.option-item.sel .option-marker{background:var(--primary);border-color:var(--primary);color:#fff}
+.option-text{font-size:15px;line-height:1.65;flex:1;padding-top:2px}
+
+/* Essay */
+.essay-textarea{width:100%;min-height:220px;padding:16px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;line-height:1.75;resize:vertical;outline:none;transition:border-color .2s}
+.essay-textarea:focus{border-color:var(--primary-l);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.char-count{text-align:right;font-size:12px;color:var(--muted);margin-top:6px}
+.ext-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn-ext{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#f8fafc;border:1.5px solid var(--border);border-radius:6px;font-size:13px;color:var(--text);cursor:pointer;text-decoration:none;transition:all .15s;font-family:inherit;font-weight:600}
+.btn-ext:hover{background:#e2e8f0;border-color:#94a3b8}
+
+/* Footer */
+.exam-footer{background:var(--white);border-top:1px solid var(--border);padding:14px 20px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.btn-nav{padding:10px 22px;border-radius:6px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--text);transition:all .15s}
+.btn-nav:hover{background:#f1f5f9}
+.btn-nav:disabled{opacity:.4;cursor:not-allowed}
+.btn-submit{background:var(--success);color:#fff;border-color:var(--success);padding:10px 28px}
+.btn-submit:hover{background:#15803d}
+.q-progress-text{font-size:13px;color:var(--muted)}
+
+/* Overlays */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--white);border-radius:16px;padding:40px;text-align:center;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-icon{font-size:52px;margin-bottom:16px}
+.modal-box h2{font-size:22px;font-weight:800;margin-bottom:10px}
+.modal-box p{color:var(--muted);font-size:14px;margin-bottom:8px;line-height:1.65}
+.modal-box .viol-count{font-size:13px;color:var(--danger);font-weight:700;margin-bottom:20px}
+.modal-box .btn-row{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.modal-box .sum-box{text-align:left;background:#f8fafc;border-radius:8px;padding:16px;margin:16px 0;font-size:13px;line-height:1.9;max-height:200px;overflow-y:auto}
+.btn-danger{background:var(--danger);color:#fff;border:none;padding:10px 24px;border-radius:6px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+.btn-cancel{background:var(--white);color:var(--text);border:1.5px solid var(--border);padding:10px 24px;border-radius:6px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+.btn-cancel:hover{background:#f1f5f9}
+.btn-return{background:var(--primary);color:#fff;border:none;padding:11px 24px;border-radius:6px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+
+/* Result */
+#screen-result{flex-direction:column;min-height:100vh}
+.result-header{background:var(--primary);color:#fff;padding:28px;text-align:center}
+.result-header h1{font-size:24px;font-weight:800;margin-bottom:6px}
+.result-header p{opacity:.85;font-size:14px}
+.result-body{padding:24px;max-width:880px;margin:0 auto;width:100%}
+.result-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;background:var(--white);border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.result-stat .rl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.result-stat .rv{font-size:22px;font-weight:800;color:var(--primary)}
+.result-q{background:var(--white);border-radius:10px;padding:20px 24px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.result-q .rq-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.result-q .rq-text{font-size:14px;color:var(--muted);margin-bottom:6px;line-height:1.5}
+.result-q .rq-ans{font-size:15px;background:#f8fafc;padding:10px 14px;border-radius:6px;border:1px solid var(--border);white-space:pre-wrap;line-height:1.7}
+.unanswered-text{color:var(--danger);font-style:italic;font-size:14px}
+.result-actions{display:flex;gap:12px;justify-content:center;padding:24px;flex-wrap:wrap}
+.btn-pdf{background:var(--danger);color:#fff;padding:14px 36px;font-size:16px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-weight:800;transition:background .2s}
+.btn-pdf:hover{background:#b91c1c}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;z-index:8000;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ===== PRINT AREA ===== */
+#print-area{display:none}
+
+@media print{
+  body>*{display:none!important}
+  #print-area{display:block!important;font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;font-size:12px;color:#000;max-width:100%;padding:0;margin:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pr-header{text-align:center;padding:12px 0 14px;border-bottom:2.5px solid #1e40af;margin-bottom:16px}
+  .pr-header h1{font-size:18px;color:#1e40af;font-weight:900;margin-bottom:4px}
+  .pr-header .pr-sub{font-size:11px;color:#64748b}
+  .pr-info{display:flex;justify-content:space-between;font-size:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #cbd5e1}
+  .pr-q{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #e2e8f0;break-inside:avoid}
+  .pr-q-head{font-weight:800;font-size:13px;color:#1e40af;margin-bottom:6px}
+  .pr-q-text{font-size:11px;color:#374151;margin-bottom:6px;line-height:1.55;white-space:pre-wrap}
+  .pr-q-text-html{font-size:11px;color:#374151;margin-bottom:6px;line-height:1.55}
+  .pr-ans-label{font-size:10px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:3px}
+  .pr-ans{background:#eff6ff;border-left:3px solid #1e40af;padding:8px 12px;font-size:12px;white-space:pre-wrap;line-height:1.6}
+  .pr-no-ans{color:#dc2626;font-style:italic;font-size:12px}
+  .pr-footer{text-align:center;font-size:10px;color:#9ca3af;margin-top:20px;padding-top:10px;border-top:1px solid #e2e8f0}
+  .pr-data-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:10px}
+  .pr-data-table th{background:#f1f5f9;padding:5px 8px;border:1px solid #cbd5e1;text-align:center;font-weight:700}
+  .pr-data-table td{padding:5px 8px;border:1px solid #cbd5e1;text-align:center}
+}
+
+/* Responsive */
+@media(max-width:640px){
+  .login-card,.lang-card{padding:32px 20px;margin:16px}
+  .exam-main{padding:14px}
+  .q-card{padding:20px 16px}
+  .lang-buttons{flex-direction:column;align-items:center}
+  .timer-box{font-size:22px;padding:6px 14px}
+  .q-btn{width:30px;height:30px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="screen-login" class="screen active">
+  <div class="login-card">
+    <div class="uni-badge">우송대학교 AI경영학과 &nbsp;·&nbsp; Woosong Univ. &nbsp;·&nbsp; 우송大学校</div>
+
+    <!-- 제목 3개 언어 병기 -->
+    <h1 class="login-title-tri">
+      <span class="tri-ko">경영통계 중간고사</span>
+      <span class="tri-sep">|</span>
+      <span class="tri-en">Business Statistics Midterm</span>
+      <span class="tri-sep">|</span>
+      <span class="tri-zh">经营统计期中考试</span>
+    </h1>
+
+    <!-- 학기 정보 3개 언어 병기 -->
+    <p class="subtitle-tri">
+      001분반 &nbsp;·&nbsp; Section 001 &nbsp;·&nbsp; 001班级 &nbsp;·&nbsp; 2026
+    </p>
+
+    <!-- 학번 입력 -->
+    <div class="form-group">
+      <label class="label-tri">
+        학번 &nbsp;<span class="label-sub">/ Student ID / 学号</span>
+      </label>
+      <input id="inp-id" type="text" autocomplete="off"
+             placeholder="학번 / Student ID / 学号">
+    </div>
+
+    <!-- 비밀번호 입력 -->
+    <div class="form-group">
+      <label class="label-tri">
+        비밀번호 &nbsp;<span class="label-sub">/ Password / 密码</span>
+      </label>
+      <input id="inp-pw" type="password" autocomplete="off"
+             placeholder="비밀번호 / Password / 密码">
+    </div>
+
+    <button class="btn btn-primary" onclick="doLogin()">
+      로그인 &nbsp;/&nbsp; Login &nbsp;/&nbsp; 登录
+    </button>
+    <div class="error-msg" id="login-err"></div>
+
+    <!-- 안내 3개 언어 병기 -->
+    <div class="login-info">
+      📌 <strong>공통 비밀번호를 입력하세요.</strong> 시험 시작 후 30분 제한.<br>
+      📌 <strong>Enter the common exam password.</strong> 30-min time limit.<br>
+      📌 <strong>请输入统一考试密码。</strong> 考试限时30分钟。
+    </div>
+  </div>
+</div>
+
+<!-- ===== LANGUAGE SELECTION ===== -->
+<div id="screen-lang" class="screen">
+  <div class="lang-card">
+    <h2 id="lang-title">시험 언어를 선택하세요</h2>
+    <p id="lang-sub">선택한 언어로 시험 문제가 표시됩니다</p>
+    <div class="lang-buttons">
+      <button class="btn-lang" onclick="selectLang('ko')">
+        <span class="flag">🇰🇷</span>한국어
+      </button>
+      <button class="btn-lang" onclick="selectLang('en')">
+        <span class="flag">🇺🇸</span>English
+      </button>
+      <button class="btn-lang" onclick="selectLang('zh')">
+        <span class="flag">🇨🇳</span>中文
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EXAM ===== -->
+<div id="screen-exam" class="screen">
+  <header class="exam-header">
+    <div class="header-left">
+      <span class="exam-title-label" id="hdr-exam-label">경영통계 중간고사 · 001분반</span>
+      <span class="student-info" id="hdr-student"></span>
+    </div>
+    <div class="timer-box" id="timer">30:00</div>
+    <div class="header-right">
+      <span id="hdr-timer-label" style="font-size:11px;opacity:.7">남은 시간</span>
+      <span class="violation-badge" id="violation-badge"></span>
+    </div>
+  </header>
+  <nav class="q-nav">
+    <span class="q-nav-label" id="nav-label">문제</span>
+    <div id="q-nav-btns" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"></div>
+  </nav>
+  <main class="exam-main" id="q-area"></main>
+  <footer class="exam-footer">
+    <button class="btn-nav" id="btn-prev" onclick="goQ(currentQIdx-1)">◀ 이전</button>
+    <span class="q-progress-text" id="progress-text"></span>
+    <div style="display:flex;gap:10px">
+      <button class="btn-nav" id="btn-next" onclick="goQ(currentQIdx+1)">다음 ▶</button>
+      <button class="btn-nav btn-submit" id="btn-submit" onclick="showSubmitModal()">제출</button>
+    </div>
+  </footer>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div id="screen-result" class="screen">
+  <div class="result-header">
+    <h1 id="res-title">답안 제출 완료</h1>
+    <p id="res-sub">시험이 성공적으로 제출되었습니다.</p>
+  </div>
+  <div class="result-body">
+    <div class="result-info-grid" id="res-info-grid"></div>
+    <div id="res-q-list"></div>
+  </div>
+  <div class="result-actions" style="flex-direction:column;align-items:center;gap:12px">
+    <div id="drive-status" style="display:none;font-size:14px;font-weight:600;padding:10px 20px;background:#f8fafc;border-radius:8px;border:1px solid var(--border)"></div>
+    <button class="btn-pdf" id="btn-pdf" onclick="doPrint()">📄 PDF 출력</button>
+  </div>
+</div>
+
+<!-- ===== CHEAT OVERLAY ===== -->
+<div class="modal-overlay" id="cheat-overlay">
+  <div class="modal-box">
+    <div class="modal-icon">⚠️</div>
+    <h2 id="cheat-title" style="color:var(--danger)">부정행위 경고</h2>
+    <p id="cheat-msg">다른 탭/창으로 이동하는 것이 감지되었습니다.</p>
+    <p id="cheat-msg2">1~7번 문제에서는 외부 사이트 이동이 제한됩니다.</p>
+    <div class="viol-count" id="cheat-count"></div>
+    <div class="btn-row">
+      <button class="btn-return" id="cheat-return-btn" onclick="dismissCheat()">시험으로 돌아가기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SUBMIT CONFIRM ===== -->
+<div class="modal-overlay" id="submit-modal">
+  <div class="modal-box">
+    <div class="modal-icon">📝</div>
+    <h2 id="sm-title">시험을 제출하시겠습니까?</h2>
+    <p id="sm-msg">제출 후에는 수정할 수 없습니다.</p>
+    <div class="sum-box" id="sm-summary"></div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="hideSubmitModal()" id="sm-cancel">돌아가기</button>
+      <button class="btn-danger" onclick="doSubmit()" id="sm-ok">제출하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TIME UP ===== -->
+<div class="modal-overlay" id="timeup-modal">
+  <div class="modal-box">
+    <div class="modal-icon">⏰</div>
+    <h2 id="tu-title" style="color:var(--danger)">시간 종료</h2>
+    <p id="tu-msg">제한시간 30분이 종료되어 자동으로 제출됩니다.</p>
+    <div class="btn-row" style="margin-top:20px">
+      <button class="btn-danger" onclick="closeTimeup()" id="tu-btn">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PRINT AREA ===== -->
+<div id="print-area"></div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+//  EXAM DATA – All 10 questions in 3 languages
+// ============================================================
+const CIRCLE = ['①','②','③','④'];
+
+const LANGS = {
+/* ═══════════════════════════════ KOREAN ═══════════════════════════════ */
+ko:{
+  ui:{
+    examTitle:'경영통계 중간고사',
+    uniLabel:'우송대학교 AI경영학과',
+    examSub:'001분반 · 2026학년도 1학기',
+    idLabel:'학번',
+    pwLabel:'비밀번호',
+    idPlaceholder:'학번을 입력하세요',
+    pwPlaceholder:'비밀번호를 입력하세요',
+    loginBtn:'로그인',
+    loginInfo:'📌 공통 비밀번호를 입력하세요.\n시험 시작 후 30분의 제한시간이 주어집니다.',
+    errNoId:'학번을 입력해주세요.',
+    errNoStudent:'등록되지 않은 학번입니다. 수강 명단을 확인해 주세요.',
+    errPw:'비밀번호가 올바르지 않습니다.',
+    langTitle:'시험 언어를 선택하세요',
+    langSub:'선택한 언어로 시험 문제가 표시됩니다',
+    hdrLabel:'경영통계 중간고사 · 001분반',
+    timerLabel:'남은 시간',
+    navLabel:'문제',
+    prevBtn:'◀ 이전',
+    nextBtn:'다음 ▶',
+    submitBtn:'제출',
+    progressTpl:'{{cur}} / {{total}} 문제',
+    cheatTitle:'부정행위 경고',
+    cheatMsg:'다른 탭/창으로 이동하는 것이 감지되었습니다.',
+    cheatMsg2:'1~7번 문제에서는 외부 사이트 이동이 제한됩니다.',
+    cheatCountTpl:'누적 위반 횟수: {{n}}회',
+    cheatReturn:'시험으로 돌아가기',
+    violBadgeTpl:'위반 {{n}}회',
+    smTitle:'시험을 제출하시겠습니까?',
+    smMsg:'제출 후에는 수정할 수 없습니다.',
+    smCancel:'돌아가기',
+    smOk:'제출하기',
+    tuTitle:'시간 종료',
+    tuMsg:'제한시간 30분이 종료되어 자동으로 제출됩니다.',
+    tuBtn:'확인',
+    resTitle:'답안 제출 완료',
+    resSub:'시험이 성공적으로 제출되었습니다.',
+    resStatId:'학번',
+    resStatTime:'제출 시각',
+    resStatAnswered:'응답 완료',
+    resStatViolation:'탭 전환 위반',
+    resStatLang:'언어',
+    pdfBtn:'📄 PDF 출력',
+    unanswered:'(미응답)',
+    badgeMcq:'객관식',
+    badgeEssay:'주관식',
+    badgeExternal:'외부자료 허용',
+    externalNotice:'✅ 이 문제는 외부 사이트(구글 Colab 등) 활용이 허용됩니다.',
+    lockNotice:'🔒 1~7번 문제에서는 다른 탭/창으로의 이동이 제한됩니다.',
+    answerLabel:'내 답안:',
+    essayPlaceholder:'답안을 이곳에 작성하세요...',
+    charCount:'{{n}}자',
+    extLinkColab:'Google Colab',
+    extLinkCalc:'통계 계산기',
+    extLinkSearch:'검색',
+    prHeader:'우송대학교 AI경영학과 | 경영통계 001분반 중간고사',
+    prSub:'2026학년도 1학기',
+    prInfoId:'학번',
+    prInfoTime:'제출일시',
+    prInfoLang:'언어',
+    prInfoViol:'탭전환 위반',
+    prAnsLabel:'제출 답안',
+    prNoAns:'(미응답)',
+    prFooter:'본 문서는 시험 답안지입니다. 위·변조 시 부정행위로 처리됩니다.',
+    toastSaved:'답안이 저장되었습니다.',
+    toastTimewarn:'⚠️ 제한시간 5분 남았습니다!',
+    summaryTpl:'{{q}}번: {{a}}',
+    summaryUnanswered:'(미응답)',
+  },
+  questions:[
+    {
+      num:1,
+      chapter:'제1장: 경영환경과 통계학 & AI 셋업',
+      type:'mcq',
+      text:'통계학의 두 가지 큰 축 중, 모집단 전체를 파악하기 위해 일부 표본 데이터를 바탕으로 모집단의 특성을 추론하고 예측하는 통계학의 분야는 무엇인가?',
+      opts:[
+        '기술통계 (Descriptive Statistics)',
+        '추론통계 (Inferential Statistics)',
+        '예측통계 (Predictive Statistics)',
+        '탐색통계 (Exploratory Statistics)'
+      ]
+    },
+    {
+      num:2,
+      chapter:'제2장: 데이터의 세계: 종류와 측정',
+      type:'mcq',
+      text:'전체 연구 대상에서 시간과 비용의 한계로 인해 일부만 과학적인 방법으로 추출한 집단을 무엇이라 부르는가?',
+      opts:[
+        '모집단 (Population)',
+        '통계량 (Statistic)',
+        '표본 (Sample)',
+        '모수 (Parameter)'
+      ]
+    },
+    {
+      num:3,
+      chapter:'제3장: 바이브코딩 기초: AI와 대화하며 코딩하기',
+      type:'mcq',
+      text:'다음 중 파이썬(Python)의 자료구조에 대한 설명으로 올바른 것은?',
+      opts:[
+        '리스트(List)는 \'키(Key)\'와 \'값(Value)\'의 쌍으로 데이터를 저장한다.',
+        '딕셔너리(Dictionary)는 데이터를 단순히 순서대로 나열하여 저장하는 방식이다.',
+        '딕셔너리(Dictionary)는 \'키(Key)\'라는 이름표를 부르면 그에 연결된 \'값(Value)\'을 직관적으로 꺼낼 수 있다.',
+        '리스트(List)는 데이터를 저장할 때 반드시 중괄호 {}를 사용해야 한다.'
+      ]
+    },
+    {
+      num:4,
+      chapter:'제4장: 데이터 시각화: 한눈에 보는 비즈니스',
+      type:'mcq',
+      text:'데이터의 성격에 적합한 시각화 그래프를 올바르게 짝지은 것은?',
+      opts:[
+        '전체 비용 중 특정 항목의 구성 비율 파악 – 히스토그램',
+        '서로 다른 범주형 데이터(지점별 매출 등) 크기 비교 – 산점도',
+        '두 수치형 변수(예: 광고비와 매출액) 사이의 상관관계 파악 – 산점도',
+        '연속형 수치 데이터의 전반적인 분포 파악 – 원 그래프'
+      ]
+    },
+    {
+      num:5,
+      chapter:'제5장: 데이터의 요약: 중심과 산포',
+      type:'mcq',
+      text:'직원 5명의 연봉이 [3천, 3.5천, 4천, 4.5천, 5억]과 같이 이상값(Outlier)이 포함된 경우, 평균의 왜곡을 피하기 위해 사용할 수 있는 가장 적절한 대푯값은 무엇인가?',
+      opts:[
+        '평균 (Mean)',
+        '중앙값 (Median)',
+        '최빈값 (Mode)',
+        '표준편차 (Standard Deviation)'
+      ]
+    },
+    {
+      num:6,
+      chapter:'제6장: 두 변수의 관계: 상관관계와 인과관계',
+      type:'mcq',
+      text:'다음 상관계수(r)에 대한 설명 중 가장 올바른 것은?',
+      opts:[
+        '상관계수는 0에서 100 사이의 값을 갖는다.',
+        'r = 0.85 이면 두 변수 간에 매우 강한 양(+)의 선형 상관관계가 있음을 의미한다.',
+        '상관계수가 음수(-)이면 두 변수 간에는 아무런 관계가 없음을 의미한다.',
+        '상관계수 r 값이 크면 한 변수가 다른 변수의 직접적인 원인이 되는 인과관계가 증명된 것이다.'
+      ]
+    },
+    {
+      num:7,
+      chapter:'제7장: 확률론과 베이즈 정리',
+      type:'mcq',
+      text:'특정 사건이나 조건이 주어졌을 때(예: 과거 실패했던 제품일 때), 다른 사건(예: 긍정적인 시장조사 결과)이 발생할 확률을 의미하는 확률의 종류는 무엇인가?',
+      opts:[
+        '고전적 확률',
+        '조건부 확률',
+        '상대 도수',
+        '독립 사건 확률'
+      ]
+    },
+    {
+      num:8,
+      chapter:'제8번: 데이터 전처리와 시각화 대시보드 구축 (2장·4장 통합)',
+      type:'essay',
+      allowExternal:true,
+      htmlContent:`<p><strong>[상황]</strong> 당신은 이커머스 기업의 데이터 분석가입니다. 마케팅 팀으로부터 최근 1년간의 <strong>고객 구매 데이터</strong>(연령, 지역, 접속시간, 구매액 등)가 담긴 샘플 파일을 전달받았으나, 결측값(빈칸)과 비정상적인 이상값이 다수 포함되어 있습니다.</p>
+<table class="data-table"><thead><tr><th>고객ID</th><th>연령</th><th>지역</th><th>접속시간(분)</th><th>구매액(만원)</th></tr></thead><tbody>
+<tr><td>C001</td><td>25</td><td>서울</td><td>15</td><td>50</td></tr>
+<tr><td>C002</td><td>34</td><td>부산</td><td class="missing">결측</td><td>75</td></tr>
+<tr><td>C003</td><td>28</td><td>서울</td><td>20</td><td>60</td></tr>
+<tr><td>C004</td><td class="missing">결측</td><td>대구</td><td>5</td><td class="missing">결측</td></tr>
+<tr><td>C005</td><td>45</td><td>광주</td><td>30</td><td>120</td></tr>
+<tr><td>C006</td><td>22</td><td>서울</td><td>10</td><td class="outlier">4000 ⚠️</td></tr>
+<tr><td>C007</td><td>31</td><td>부산</td><td>25</td><td>85</td></tr>
+<tr><td>C008</td><td>38</td><td>경기</td><td>18</td><td>90</td></tr>
+</tbody></table>
+<p>※ C006의 구매액 <strong>'4000'</strong>은 시각화 시 분포를 왜곡하는 극단적 이상값이며, C002와 C004에는 결측값이 존재합니다.</p>
+<p style="margin-top:14px"><strong>[실무 과제]</strong> 제공된 데이터의 결측치와 이상치를 파이썬(Pandas)을 통해 정제(전처리)한 후, Matplotlib과 Seaborn을 활용해 주요 변수의 <strong>2×2 대시보드</strong>(히스토그램, 막대 그래프 등)로 시각화하시오. 시각화 결과를 바탕으로 정보의 왜곡(예: Y축의 0점 시작 여부 등)이 없는지 점검하고, 내년도 집중 타겟팅해야 할 핵심 고객군에 대한 <strong>경영 인사이트</strong>를 도출해 보시오.</p>`
+    },
+    {
+      num:9,
+      chapter:'제9번: 대푯값과 변동계수(CV)를 활용한 경영 의사결정',
+      type:'essay',
+      allowExternal:true,
+      htmlContent:`<p><strong>[상황]</strong> 팀A [72, 75, 78, 73, 76, 80]과 팀B [50, 90, 65, 95, 55, 85]의 기술 통계값을 비교하시오.</p>
+<ul style="margin:12px 0 12px 20px;line-height:2">
+  <li><strong>팀A:</strong> 평균 = 75.67, 표준편차 = 3.01</li>
+  <li><strong>팀B:</strong> 평균 = 73.33, 표준편차 = 19.15</li>
+</ul>
+<p style="background:#f0fdf4;padding:10px 14px;border-radius:6px;font-size:14px;border:1px solid #86efac">📐 변동계수(CV) = (표준편차 ÷ 평균) × 100%</p>
+<p style="margin-top:14px"><strong>[실무 과제]</strong> 두 팀의 평균 점수는 비슷하게 보입니다. 이런 상황에서 어떤 팀이 더 일관된 성과를 내는지 <strong>변동계수(CV)</strong>로 판단하시오. CV 값을 직접 계산하고 그 의미를 경영적 관점에서 해석하시오.</p>`
+    },
+    {
+      num:10,
+      chapter:'제10번: 광고비와 매출 간의 관계 – 상관관계? 인과관계?',
+      type:'essay',
+      allowExternal:true,
+      htmlContent:`<p><strong>[상황]</strong></p>
+<ul style="margin:10px 0 10px 20px;line-height:2">
+  <li><strong>아이스크림 광고비(만원):</strong> [50, 80, 100, 120, 90, 110, 130, 100, 140, 150, 120, 160]</li>
+  <li><strong>수영복 매출액(만원):</strong> [500, 700, 850, 1000, 780, 920, 1100, 880, 1150, 1250, 980, 1300]</li>
+</ul>
+<p style="background:#fef3c7;padding:10px 14px;border-radius:6px;font-size:14px;border:1px solid #fbbf24">📊 두 자료의 <strong>상관계수(r) = 0.9978</strong> (99.78%)</p>
+<p style="margin-top:14px"><strong>[실무 과제]</strong> 이 결과를 합리적으로 해석하시오. 상관계수가 0.9978로 매우 높은데, 이것이 <strong>상관관계</strong>인지 <strong>인과관계</strong>인지 근거를 들어 설명하시오. 또한 이 데이터 분석에서 놓칠 수 있는 통계적 함정은 무엇인지 논하시오.</p>`
+    }
+  ]
+},
+
+/* ═══════════════════════════════ ENGLISH ═══════════════════════════════ */
+en:{
+  ui:{
+    examTitle:'Business Statistics Midterm',
+    uniLabel:'Dept. of AI Business Management, Woosong University',
+    examSub:'Section 001 · 2026 Spring Semester',
+    idLabel:'Student ID',
+    pwLabel:'Password',
+    idPlaceholder:'Enter your student ID',
+    pwPlaceholder:'Enter the password',
+    loginBtn:'Login',
+    loginInfo:'📌 Enter the common exam password.\nYou will have 30 minutes once the exam begins.',
+    errNoId:'Please enter your student ID.',
+    errNoStudent:'This student ID is not registered. Please check your enrollment.',
+    errPw:'Incorrect password.',
+    langTitle:'Select Exam Language',
+    langSub:'The exam will be displayed in the selected language.',
+    hdrLabel:'Business Statistics Midterm · Section 001',
+    timerLabel:'Time Left',
+    navLabel:'Q',
+    prevBtn:'◀ Prev',
+    nextBtn:'Next ▶',
+    submitBtn:'Submit',
+    progressTpl:'{{cur}} / {{total}}',
+    cheatTitle:'Warning: Violation Detected',
+    cheatMsg:'Navigation to another tab/window has been detected.',
+    cheatMsg2:'Navigation to external sites is restricted for questions 1–7.',
+    cheatCountTpl:'Total violations: {{n}}',
+    cheatReturn:'Return to Exam',
+    violBadgeTpl:'{{n}} violation(s)',
+    smTitle:'Submit your exam?',
+    smMsg:'You cannot make changes after submission.',
+    smCancel:'Go Back',
+    smOk:'Submit',
+    tuTitle:'Time\'s Up',
+    tuMsg:'The 30-minute time limit has ended. Your answers are being submitted automatically.',
+    tuBtn:'OK',
+    resTitle:'Exam Submitted',
+    resSub:'Your answers have been successfully submitted.',
+    resStatId:'Student ID',
+    resStatTime:'Submitted At',
+    resStatAnswered:'Answered',
+    resStatViolation:'Tab Violations',
+    resStatLang:'Language',
+    pdfBtn:'📄 Print PDF',
+    unanswered:'(No answer)',
+    badgeMcq:'Multiple Choice',
+    badgeEssay:'Short Answer',
+    badgeExternal:'External Resources Allowed',
+    externalNotice:'✅ You may use external sites (Google Colab, etc.) for this question.',
+    lockNotice:'🔒 Navigating to other tabs/windows is restricted during questions 1–7.',
+    answerLabel:'Your Answer:',
+    essayPlaceholder:'Write your answer here...',
+    charCount:'{{n}} chars',
+    extLinkColab:'Google Colab',
+    extLinkCalc:'Stats Calculator',
+    extLinkSearch:'Search',
+    prHeader:'Woosong University – Business Statistics Midterm Exam (Section 001)',
+    prSub:'2026 Spring Semester',
+    prInfoId:'Student ID',
+    prInfoTime:'Submitted',
+    prInfoLang:'Language',
+    prInfoViol:'Tab Violations',
+    prAnsLabel:'Submitted Answer',
+    prNoAns:'(No answer)',
+    prFooter:'This document is an official exam answer sheet. Any alteration constitutes academic misconduct.',
+    toastSaved:'Answer saved.',
+    toastTimewarn:'⚠️ 5 minutes remaining!',
+    summaryTpl:'Q{{q}}: {{a}}',
+    summaryUnanswered:'(No answer)',
+  },
+  questions:[
+    {
+      num:1,
+      chapter:'Ch.1: Business Environment, Statistics & AI Setup',
+      type:'mcq',
+      text:'Of the two main branches of statistics, which branch uses a subset of sample data to infer and predict the characteristics of the entire population?',
+      opts:[
+        'Descriptive Statistics',
+        'Inferential Statistics',
+        'Predictive Statistics',
+        'Exploratory Statistics'
+      ]
+    },
+    {
+      num:2,
+      chapter:'Ch.2: The World of Data: Types and Measurement',
+      type:'mcq',
+      text:'What is the term for the group that is scientifically extracted from the entire research population due to limitations of time and cost?',
+      opts:[
+        'Population',
+        'Statistic',
+        'Sample',
+        'Parameter'
+      ]
+    },
+    {
+      num:3,
+      chapter:'Ch.3: Vibe Coding Basics: Coding Through Conversation with AI',
+      type:'mcq',
+      text:'Which of the following correctly describes Python data structures?',
+      opts:[
+        'A List stores data as \'Key\' and \'Value\' pairs.',
+        'A Dictionary simply stores data in sequential order.',
+        'A Dictionary allows you to intuitively retrieve a \'Value\' by calling its associated \'Key\' name.',
+        'A List must use curly braces {} when storing data.'
+      ]
+    },
+    {
+      num:4,
+      chapter:'Ch.4: Data Visualization: A Quick Look at Business',
+      type:'mcq',
+      text:'Which of the following correctly matches each type of data with the most appropriate visualization chart?',
+      opts:[
+        'Understanding the composition ratio of a specific cost item within total costs → Histogram',
+        'Comparing sizes of different categorical data (e.g., sales by branch) → Scatter plot',
+        'Identifying the correlation between two numerical variables (e.g., advertising spend and revenue) → Scatter plot',
+        'Understanding the overall distribution of continuous numerical data → Pie chart'
+      ]
+    },
+    {
+      num:5,
+      chapter:'Ch.5: Data Summary: Center and Spread',
+      type:'mcq',
+      text:'When salaries of 5 employees are [₩3M, ₩3.5M, ₩4M, ₩4.5M, ₩500M] with an outlier included, which measure of central tendency is most appropriate to avoid distortion?',
+      opts:[
+        'Mean',
+        'Median',
+        'Mode',
+        'Standard Deviation'
+      ]
+    },
+    {
+      num:6,
+      chapter:'Ch.6: Relationship Between Two Variables: Correlation vs. Causation',
+      type:'mcq',
+      text:'Which of the following is the most correct statement about the correlation coefficient (r)?',
+      opts:[
+        'The correlation coefficient takes values between 0 and 100.',
+        'r = 0.85 means there is a very strong positive (+) linear correlation between the two variables.',
+        'A negative (-) correlation coefficient means there is no relationship between the two variables.',
+        'A large r value proves a causal relationship where one variable directly causes the other.'
+      ]
+    },
+    {
+      num:7,
+      chapter:'Ch.7: Probability Theory and Bayes\' Theorem',
+      type:'mcq',
+      text:'What type of probability refers to the probability of one event (e.g., a positive market research result) occurring given a specific condition (e.g., when a product has previously failed)?',
+      opts:[
+        'Classical probability',
+        'Conditional probability',
+        'Relative frequency',
+        'Independent event probability'
+      ]
+    },
+    {
+      num:8,
+      chapter:'Q8: Data Preprocessing & Visualization Dashboard (Ch.2 + Ch.4)',
+      type:'essay',
+      allowExternal:true,
+      htmlContent:`<p><strong>[Situation]</strong> You are a data analyst at an e-commerce company. You received a sample file from the marketing team containing <strong>customer purchase data</strong> (age, region, session time, purchase amount, etc.) for the past year. The dataset includes numerous missing values and abnormal outliers.</p>
+<table class="data-table"><thead><tr><th>Customer ID</th><th>Age</th><th>Region</th><th>Session (min)</th><th>Purchase (₩10k)</th></tr></thead><tbody>
+<tr><td>C001</td><td>25</td><td>Seoul</td><td>15</td><td>50</td></tr>
+<tr><td>C002</td><td>34</td><td>Busan</td><td class="missing">MISSING</td><td>75</td></tr>
+<tr><td>C003</td><td>28</td><td>Seoul</td><td>20</td><td>60</td></tr>
+<tr><td>C004</td><td class="missing">MISSING</td><td>Daegu</td><td>5</td><td class="missing">MISSING</td></tr>
+<tr><td>C005</td><td>45</td><td>Gwangju</td><td>30</td><td>120</td></tr>
+<tr><td>C006</td><td>22</td><td>Seoul</td><td>10</td><td class="outlier">4000 ⚠️</td></tr>
+<tr><td>C007</td><td>31</td><td>Busan</td><td>25</td><td>85</td></tr>
+<tr><td>C008</td><td>38</td><td>Gyeonggi</td><td>18</td><td>90</td></tr>
+</tbody></table>
+<p>※ C006's purchase amount <strong>'4000'</strong> is an extreme outlier that will distort the distribution. C002 and C004 have missing values.</p>
+<p style="margin-top:14px"><strong>[Task]</strong> Clean the missing values and outliers using Python (Pandas), then visualize the key variables as a <strong>2×2 dashboard</strong> (histograms, bar charts, etc.) using Matplotlib and Seaborn. Check whether visualizations avoid distortion (e.g., Y-axis starting at 0), and derive <strong>business insights</strong> regarding the key customer segments to target next year.</p>`
+    },
+    {
+      num:9,
+      chapter:'Q9: Business Decision-Making Using CV (Ch.5)',
+      type:'essay',
+      allowExternal:true,
+      htmlContent:`<p><strong>[Situation]</strong> Compare the descriptive statistics of Team A and Team B.</p>
+<ul style="margin:12px 0 12px 20px;line-height:2">
+  <li><strong>Team A:</strong> [72, 75, 78, 73, 76, 80] &nbsp;→&nbsp; Mean = 75.67, SD = 3.01</li>
+  <li><strong>Team B:</strong> [50, 90, 65, 95, 55, 85] &nbsp;→&nbsp; Mean = 73.33, SD = 19.15</li>
+</ul>
+<p style="background:#f0fdf4;padding:10px 14px;border-radius:6px;font-size:14px;border:1px solid #86efac">📐 Coefficient of Variation (CV) = (Standard Deviation ÷ Mean) × 100%</p>
+<p style="margin-top:14px"><strong>[Task]</strong> The two teams' average scores appear similar. Calculate the <strong>Coefficient of Variation (CV)</strong> for each team and determine which team delivers more consistent performance. Interpret the result from a business management perspective.</p>`
+    },
+    {
+      num:10,
+      chapter:'Q10: Advertising vs. Sales – Correlation or Causation? (Ch.6)',
+      type:'essay',
+      allowExternal:true,
+      htmlContent:`<p><strong>[Situation]</strong></p>
+<ul style="margin:10px 0 10px 20px;line-height:2">
+  <li><strong>Ice cream advertising spend (₩10k):</strong> [50, 80, 100, 120, 90, 110, 130, 100, 140, 150, 120, 160]</li>
+  <li><strong>Swimwear sales (₩10k):</strong> [500, 700, 850, 1000, 780, 920, 1100, 880, 1150, 1250, 980, 1300]</li>
+</ul>
+<p style="background:#fef3c7;padding:10px 14px;border-radius:6px;font-size:14px;border:1px solid #fbbf24">📊 Correlation coefficient between the two datasets: <strong>r = 0.9978</strong> (99.78%)</p>
+<p style="margin-top:14px"><strong>[Task]</strong> Interpret this result rationally. Although r = 0.9978 is very high, explain with evidence whether this represents <strong>correlation</strong> or <strong>causation</strong>. Also discuss what statistical pitfalls might be overlooked in this analysis.</p>`
+    }
+  ]
+},
+
+/* ═══════════════════════════════ CHINESE ═══════════════════════════════ */
+zh:{
+  ui:{
+    examTitle:'经营统计期中考试',
+    uniLabel:'우송大学校 AI经营学科',
+    examSub:'001班级 · 2026学年度第1学期',
+    idLabel:'学号',
+    pwLabel:'密码',
+    idPlaceholder:'请输入学号',
+    pwPlaceholder:'请输入密码',
+    loginBtn:'登录',
+    loginInfo:'📌 请输入统一考试密码。\n考试开始后将有30分钟的限制时间。',
+    errNoId:'请输入学号。',
+    errNoStudent:'该学号未注册，请确认您的选课信息。',
+    errPw:'密码不正确。',
+    langTitle:'请选择考试语言',
+    langSub:'考试题目将以所选语言显示',
+    hdrLabel:'经营统计期中考试 · 001班级',
+    timerLabel:'剩余时间',
+    navLabel:'题',
+    prevBtn:'◀ 上一题',
+    nextBtn:'下一题 ▶',
+    submitBtn:'提交',
+    progressTpl:'第{{cur}}题 / 共{{total}}题',
+    cheatTitle:'作弊警告',
+    cheatMsg:'检测到您切换到其他标签页/窗口。',
+    cheatMsg2:'作答第1-7题期间，禁止访问外部网站。',
+    cheatCountTpl:'累计违规次数：{{n}}次',
+    cheatReturn:'返回考试',
+    violBadgeTpl:'违规{{n}}次',
+    smTitle:'确认提交考试？',
+    smMsg:'提交后将无法修改答案。',
+    smCancel:'返回',
+    smOk:'确认提交',
+    tuTitle:'考试时间到',
+    tuMsg:'30分钟限制时间已结束，系统将自动提交您的答案。',
+    tuBtn:'确认',
+    resTitle:'答案提交完成',
+    resSub:'您的考试已成功提交。',
+    resStatId:'学号',
+    resStatTime:'提交时间',
+    resStatAnswered:'已作答',
+    resStatViolation:'切换违规',
+    resStatLang:'语言',
+    pdfBtn:'📄 打印PDF',
+    unanswered:'（未作答）',
+    badgeMcq:'选择题',
+    badgeEssay:'简答题',
+    badgeExternal:'允许使用外部资源',
+    externalNotice:'✅ 本题允许使用外部网站（如Google Colab等）。',
+    lockNotice:'🔒 作答第1-7题期间，禁止切换至其他标签页/窗口。',
+    answerLabel:'我的答案：',
+    essayPlaceholder:'请在此处填写您的答案...',
+    charCount:'{{n}}字',
+    extLinkColab:'Google Colab',
+    extLinkCalc:'统计计算器',
+    extLinkSearch:'搜索',
+    prHeader:'우송大学校 AI经营学科 | 经营统计001班 期中考试',
+    prSub:'2026学年度第1学期',
+    prInfoId:'学号',
+    prInfoTime:'提交时间',
+    prInfoLang:'语言',
+    prInfoViol:'切换违规',
+    prAnsLabel:'提交答案',
+    prNoAns:'（未作答）',
+    prFooter:'本文件为考试答题纸，任何篡改行为均构成学术不诚信。',
+    toastSaved:'答案已保存。',
+    toastTimewarn:'⚠️ 还剩5分钟！',
+    summaryTpl:'第{{q}}题：{{a}}',
+    summaryUnanswered:'（未作答）',
+  },
+  questions:[
+    {
+      num:1,
+      chapter:'第1章：经营环境与统计学 & AI设置',
+      type:'mcq',
+      text:'统计学的两大分支中，通过部分样本数据来推断和预测整体总体特征的统计学领域是什么？',
+      opts:[
+        '描述统计（Descriptive Statistics）',
+        '推断统计（Inferential Statistics）',
+        '预测统计（Predictive Statistics）',
+        '探索统计（Exploratory Statistics）'
+      ]
+    },
+    {
+      num:2,
+      chapter:'第2章：数据的世界：种类与测量',
+      type:'mcq',
+      text:'由于时间和成本的限制，从整体研究对象中用科学方法抽取的一部分群体称为什么？',
+      opts:[
+        '总体（Population）',
+        '统计量（Statistic）',
+        '样本（Sample）',
+        '参数（Parameter）'
+      ]
+    },
+    {
+      num:3,
+      chapter:'第3章：维布编程基础：与AI对话编程',
+      type:'mcq',
+      text:'以下哪项是对Python数据结构的正确描述？',
+      opts:[
+        '列表（List）以"键（Key）"与"值（Value）"的组合形式存储数据。',
+        '字典（Dictionary）只是将数据按顺序排列存储的方式。',
+        '字典（Dictionary）可通过调用"键（Key）"这个名称标签，直观地取出与之关联的"值（Value）"。',
+        '列表（List）存储数据时必须使用大括号{}。'
+      ]
+    },
+    {
+      num:4,
+      chapter:'第4章：数据可视化：一眼看懂商业',
+      type:'mcq',
+      text:'以下哪项是将数据类型与最适合的可视化图表正确匹配的选项？',
+      opts:[
+        '了解总成本中特定项目的构成比率 → 直方图',
+        '比较不同类别数据（如各分支机构销售额）的大小 → 散点图',
+        '了解两个数值型变量（如广告费与销售额）之间的相关关系 → 散点图',
+        '了解连续型数值数据的整体分布 → 饼图'
+      ]
+    },
+    {
+      num:5,
+      chapter:'第5章：数据摘要：中心与分散',
+      type:'mcq',
+      text:'当5名员工的年薪为[300万、350万、400万、450万、5亿]，其中包含离群值时，为避免平均值被扭曲，应使用哪种最适当的代表值？',
+      opts:[
+        '平均值（Mean）',
+        '中位数（Median）',
+        '众数（Mode）',
+        '标准差（Standard Deviation）'
+      ]
+    },
+    {
+      num:6,
+      chapter:'第6章：两个变量的关系：相关关系与因果关系',
+      type:'mcq',
+      text:'以下关于相关系数（r）的描述中，最正确的是哪一项？',
+      opts:[
+        '相关系数的取值范围是0到100之间。',
+        'r = 0.85表示两个变量之间存在非常强的正(+)线性相关关系。',
+        '相关系数为负(-)表示两个变量之间没有任何关系。',
+        '相关系数r值越大，就证明了一个变量直接导致另一个变量的因果关系。'
+      ]
+    },
+    {
+      num:7,
+      chapter:'第7章：概率论与贝叶斯定理',
+      type:'mcq',
+      text:'在给定特定事件或条件（如：过去曾失败的产品时）的前提下，另一事件（如：积极的市场调查结果）发生的概率，称为哪种概率？',
+      opts:[
+        '古典概率',
+        '条件概率',
+        '相对频率',
+        '独立事件概率'
+      ]
+    },
+    {
+      num:8,
+      chapter:'第8题：数据预处理与可视化仪表板构建（第2章·第4章综合）',
+      type:'essay',
+      allowExternal:true,
+      htmlContent:`<p><strong>【情境】</strong> 您是一家电商企业的数据分析师。您收到了市场营销团队发来的包含最近一年<strong>客户购买数据</strong>（年龄、地区、访问时间、购买金额等）的样本文件，但其中包含大量缺失值（空白）和异常离群值。</p>
+<table class="data-table"><thead><tr><th>客户ID</th><th>年龄</th><th>地区</th><th>访问时间(分)</th><th>购买金额(万韩元)</th></tr></thead><tbody>
+<tr><td>C001</td><td>25</td><td>首尔</td><td>15</td><td>50</td></tr>
+<tr><td>C002</td><td>34</td><td>釜山</td><td class="missing">缺失</td><td>75</td></tr>
+<tr><td>C003</td><td>28</td><td>首尔</td><td>20</td><td>60</td></tr>
+<tr><td>C004</td><td class="missing">缺失</td><td>大邱</td><td>5</td><td class="missing">缺失</td></tr>
+<tr><td>C005</td><td>45</td><td>光州</td><td>30</td><td>120</td></tr>
+<tr><td>C006</td><td>22</td><td>首尔</td><td>10</td><td class="outlier">4000 ⚠️</td></tr>
+<tr><td>C007</td><td>31</td><td>釜山</td><td>25</td><td>85</td></tr>
+<tr><td>C008</td><td>38</td><td>京畿道</td><td>18</td><td>90</td></tr>
+</tbody></table>
+<p>※ 客户C006的购买金额<strong>'4000'</strong>是极端离群值，会在可视化时扭曲分布；C002和C004存在缺失值。</p>
+<p style="margin-top:14px"><strong>【实务任务】</strong> 使用Python（Pandas）对提供数据中的缺失值和离群值进行清洗（预处理），然后利用Matplotlib和Seaborn将主要变量以<strong>2×2仪表板</strong>（直方图、条形图等）形式可视化。根据可视化结果检查是否存在信息失真（例如Y轴是否从0开始等），并得出明年需要重点针对的核心客户群的<strong>经营洞察</strong>。</p>`
+    },
+    {
+      num:9,
+      chapter:'第9题：利用代表值和变异系数(CV)进行经营决策（第5章）',
+      type:'essay',
+      allowExternal:true,
+      htmlContent:`<p><strong>【情境】</strong> 比较团队A和团队B的描述统计值。</p>
+<ul style="margin:12px 0 12px 20px;line-height:2">
+  <li><strong>团队A：</strong> [72, 75, 78, 73, 76, 80] &nbsp;→&nbsp; 平均值 = 75.67，标准差 = 3.01</li>
+  <li><strong>团队B：</strong> [50, 90, 65, 95, 55, 85] &nbsp;→&nbsp; 平均值 = 73.33，标准差 = 19.15</li>
+</ul>
+<p style="background:#f0fdf4;padding:10px 14px;border-radius:6px;font-size:14px;border:1px solid #86efac">📐 变异系数（CV）=（标准差 ÷ 平均值）× 100%</p>
+<p style="margin-top:14px"><strong>【实务任务】</strong> 两队的平均分看起来差不多。在这种情况下，请计算每队的<strong>变异系数（CV）</strong>并判断哪支队伍表现更稳定。请从经营管理角度解释该结果的含义。</p>`
+    },
+    {
+      num:10,
+      chapter:'第10题：广告费与销售额的关系——相关关系还是因果关系？（第6章）',
+      type:'essay',
+      allowExternal:true,
+      htmlContent:`<p><strong>【情境】</strong></p>
+<ul style="margin:10px 0 10px 20px;line-height:2">
+  <li><strong>冰淇淋广告费（万韩元）：</strong> [50, 80, 100, 120, 90, 110, 130, 100, 140, 150, 120, 160]</li>
+  <li><strong>泳衣销售额（万韩元）：</strong> [500, 700, 850, 1000, 780, 920, 1100, 880, 1150, 1250, 980, 1300]</li>
+</ul>
+<p style="background:#fef3c7;padding:10px 14px;border-radius:6px;font-size:14px;border:1px solid #fbbf24">📊 两组数据的相关系数：<strong>r = 0.9978</strong>（99.78%）</p>
+<p style="margin-top:14px"><strong>【实务任务】</strong> 请合理解释这一结果。虽然r = 0.9978非常高，但请举证说明这是<strong>相关关系</strong>还是<strong>因果关系</strong>。同时请讨论在此数据分析中可能被忽视的统计陷阱。</p>`
+    }
+  ]
+}
+};
+
+// ============================================================
+//  STUDENT REGISTRY (from 경영통계001_참여자 목록.xlsx)
+// ============================================================
+const STUDENTS = {
+  '202430243': 'ZHANG ZIJIAN',
+  '202512445': 'Wenbap Dolnapha',
+  '202512501': 'LIU YAQI',
+  '202512504': 'LI LINFENG',
+  '202512540': 'WANG HONGXU',
+  '202610062': '강현휘',
+  '202610063': '고민지',
+  '202610064': '권도희',
+  '202610065': '김다은',
+  '202610066': '김도경',
+  '202610069': '김민정',
+  '202610070': '김재원',
+  '202610071': '김준서',
+  '202610074': '김현우',
+  '202610076': '박동호',
+  '202610077': '박서연',
+  '202610081': '송윤서',
+  '202610082': '염지현',
+  '202610085': '이상현',
+  '202610086': '이성민',
+  '202610087': '이승현',
+  '202610088': '이유찬',
+  '202610089': '이은기',
+  '202610090': '이재혁',
+  '202610091': '이정민',
+  '202610092': '이태건',
+  '202610093': '이하늘',
+  '202610094': '이현정',
+  '202610096': '장현아',
+  '202610097': '정승현',
+  '202610098': '정현교',
+  '202610100': '홍승아',
+  '202610101': '황서연',
+  '202630022': '최희승',
+  '20121039':  '김형태'
+};
+
+// ============================================================
+//  STATE
+// ============================================================
+let currentLang = 'ko';
+let studentId = '';
+let studentName = '';
+let currentQIdx = 0;
+let answers = new Array(10).fill(null);  // MCQ: null|0-3, Essay: ''
+let remainingSeconds = 30 * 60;
+let timerInterval = null;
+let violationCount = 0;
+let submitted = false;
+let submitTime = null;
+let warnedAt5min = false;
+
+// ============================================================
+//  HELPERS
+// ============================================================
+function L() { return LANGS[currentLang]; }
+function UI(k) { return L().ui[k] || k; }
+function t(k, vars) {
+  let s = UI(k);
+  if (vars) Object.entries(vars).forEach(([k,v]) => { s = s.replace(`{{${k}}}`, v); });
+  return s;
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ============================================================
+//  LOGIN
+// ============================================================
+function doLogin() {
+  const id = document.getElementById('inp-id').value.trim();
+  const pw = document.getElementById('inp-pw').value;
+  const errEl = document.getElementById('login-err');
+  if (!id) { errEl.textContent = UI('errNoId'); return; }
+  if (!STUDENTS[id]) { errEl.textContent = UI('errNoStudent'); return; }
+  if (pw !== '20260424') { errEl.textContent = UI('errPw'); return; }
+  errEl.textContent = '';
+  studentId = id;
+  studentName = STUDENTS[id];
+  showScreen('lang');
+}
+
+// Allow pressing Enter in login inputs
+document.getElementById('inp-id').addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('inp-pw').focus(); });
+document.getElementById('inp-pw').addEventListener('keydown', e => { if (e.key==='Enter') doLogin(); });
+
+// ============================================================
+//  LANGUAGE SELECTION
+// ============================================================
+function selectLang(lang) {
+  currentLang = lang;
+  startExam();
+}
+
+// ============================================================
+//  EXAM START
+// ============================================================
+function startExam() {
+  // Init answers: essay questions get empty string
+  answers = new Array(10).fill(null);
+  for (let i = 7; i < 10; i++) answers[i] = '';
+
+  remainingSeconds = 30 * 60;
+  violationCount = 0;
+  submitted = false;
+  currentQIdx = 0;
+  warnedAt5min = false;
+
+  // Update header
+  document.getElementById('hdr-exam-label').textContent = UI('hdrLabel');
+  document.getElementById('hdr-student').textContent = studentId + ' ' + studentName;
+  document.getElementById('hdr-timer-label').textContent = UI('timerLabel');
+
+  // Update footer buttons
+  document.getElementById('btn-prev').textContent = UI('prevBtn');
+  document.getElementById('btn-next').textContent = UI('nextBtn');
+  document.getElementById('btn-submit').textContent = UI('submitBtn');
+
+  // Build nav
+  buildNav();
+  goQ(0);
+  startTimer();
+  showScreen('exam');
+}
+
+// ============================================================
+//  TIMER
+// ============================================================
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    if (submitted) { clearInterval(timerInterval); return; }
+    remainingSeconds--;
+    updateTimerDisplay();
+    if (!warnedAt5min && remainingSeconds === 5 * 60) {
+      warnedAt5min = true;
+      showToast(UI('toastTimewarn'));
+    }
+    if (remainingSeconds <= 0) {
+      clearInterval(timerInterval);
+      autoSubmit();
+    }
+  }, 1000);
+}
+function updateTimerDisplay() {
+  const min = Math.floor(remainingSeconds / 60);
+  const sec = remainingSeconds % 60;
+  const el = document.getElementById('timer');
+  el.textContent = String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  el.className = 'timer-box';
+  if (remainingSeconds <= 60) el.classList.add('danger');
+  else if (remainingSeconds <= 5 * 60) el.classList.add('warn');
+}
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function buildNav() {
+  const qs = L().questions;
+  document.getElementById('nav-label').textContent = UI('navLabel');
+  const container = document.getElementById('q-nav-btns');
+  container.innerHTML = '';
+  qs.forEach((q, i) => {
+    if (i === 7) {
+      const div = document.createElement('div');
+      div.className = 'q-divider';
+      container.appendChild(div);
+    }
+    const btn = document.createElement('button');
+    btn.className = 'q-btn' + (q.type==='essay' ? ' essay-type' : '');
+    btn.textContent = q.num;
+    btn.id = 'qnav-' + i;
+    btn.onclick = () => goQ(i);
+    container.appendChild(btn);
+  });
+}
+function updateNavState() {
+  const qs = L().questions;
+  qs.forEach((q, i) => {
+    const btn = document.getElementById('qnav-' + i);
+    if (!btn) return;
+    let cls = 'q-btn' + (q.type==='essay' ? ' essay-type' : '');
+    if (i === currentQIdx) cls += ' cur';
+    const ans = answers[i];
+    const isAnswered = q.type==='mcq' ? (ans !== null) : (typeof ans==='string' && ans.trim()!=='');
+    if (isAnswered && q.type==='mcq') cls += ' done-mcq';
+    if (isAnswered && q.type==='essay') cls += ' done-essay';
+    btn.className = cls;
+  });
+}
+function goQ(idx) {
+  const qs = L().questions;
+  if (idx < 0 || idx >= qs.length) return;
+  // Save current essay answer before moving
+  saveCurrentEssay();
+  currentQIdx = idx;
+  renderQ(idx);
+  updateNavState();
+  // Update footer
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === qs.length - 1;
+  const total = qs.length;
+  document.getElementById('progress-text').textContent = t('progressTpl', {cur: idx+1, total});
+}
+
+// ============================================================
+//  RENDER QUESTION
+// ============================================================
+function renderQ(idx) {
+  const q = L().questions[idx];
+  const area = document.getElementById('q-area');
+
+  const isExternal = q.allowExternal === true;
+  const noticeHtml = isExternal
+    ? `<div class="external-notice"><span class="notice-icon">🌐</span>${UI('externalNotice')}</div>`
+    : `<div class="lock-notice"><span class="notice-icon">🔒</span>${UI('lockNotice')}</div>`;
+
+  const typeLabel = q.type==='mcq' ? UI('badgeMcq') : (isExternal ? UI('badgeExternal') : UI('badgeEssay'));
+  const typeCls = q.type==='mcq' ? 'badge-mcq' : (isExternal ? 'badge-external' : 'badge-essay');
+
+  let bodyHtml = '';
+  if (q.type === 'mcq') {
+    const curAns = answers[idx];
+    let optsHtml = '<div class="options-list">';
+    q.opts.forEach((opt, oi) => {
+      const sel = curAns === oi ? ' sel' : '';
+      optsHtml += `<div class="option-item${sel}" onclick="selectMCQ(${idx},${oi})" id="opt-${idx}-${oi}">
+        <div class="option-marker">${CIRCLE[oi]}</div>
+        <div class="option-text">${escHtml(opt)}</div>
+      </div>`;
+    });
+    optsHtml += '</div>';
+    bodyHtml = `<div class="q-text">${escHtml(q.text)}</div>${optsHtml}`;
+  } else {
+    // Essay question
+    const curAns = answers[idx] || '';
+    const extLinks = isExternal ? `
+      <div class="ext-links">
+        <a class="btn-ext" href="https://colab.research.google.com" target="_blank" rel="noopener">🔗 ${UI('extLinkColab')}</a>
+        <a class="btn-ext" href="https://www.google.com/search?q=statistics+calculator" target="_blank" rel="noopener">🔍 ${UI('extLinkSearch')}</a>
+      </div>` : '';
+    bodyHtml = `
+      <div class="q-html-content">${q.htmlContent}</div>
+      <div style="margin-top:16px;font-size:13px;color:var(--muted);font-weight:700;margin-bottom:6px">${UI('answerLabel')}</div>
+      <textarea class="essay-textarea" id="essay-${idx}" placeholder="${UI('essayPlaceholder')}"
+        oninput="onEssayInput(${idx})">${escHtml(curAns)}</textarea>
+      <div class="char-count" id="char-${idx}">${t('charCount',{n:curAns.length})}</div>
+      ${extLinks}`;
+  }
+
+  area.innerHTML = `
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-num">${t('navLabel')} ${q.num}</span>
+        <span class="q-chapter">${escHtml(q.chapter)}</span>
+        <span class="q-badge ${typeCls}">${typeLabel}</span>
+      </div>
+      ${noticeHtml}
+      ${bodyHtml}
+    </div>`;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ============================================================
+//  ANSWER HANDLING
+// ============================================================
+function selectMCQ(qIdx, optIdx) {
+  answers[qIdx] = optIdx;
+  // Re-render options only
+  const q = L().questions[qIdx];
+  q.opts.forEach((_, oi) => {
+    const el = document.getElementById(`opt-${qIdx}-${oi}`);
+    if (!el) return;
+    el.className = 'option-item' + (oi === optIdx ? ' sel' : '');
+    el.querySelector('.option-marker').className = 'option-marker';
+  });
+  updateNavState();
+  showToast(UI('toastSaved'));
+}
+function onEssayInput(qIdx) {
+  const el = document.getElementById('essay-' + qIdx);
+  if (!el) return;
+  answers[qIdx] = el.value;
+  const cc = document.getElementById('char-' + qIdx);
+  if (cc) cc.textContent = t('charCount', {n: el.value.length});
+  updateNavState();
+}
+function saveCurrentEssay() {
+  if (L().questions[currentQIdx]?.type !== 'essay') return;
+  const el = document.getElementById('essay-' + currentQIdx);
+  if (el) answers[currentQIdx] = el.value;
+}
+
+// ============================================================
+//  ANTI-CHEAT
+// ============================================================
+function isOnRestrictedQ() {
+  return !submitted && currentQIdx < 7;
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && isOnRestrictedQ()) {
+    violationCount++;
+    showCheatOverlay();
+  }
+});
+window.addEventListener('blur', () => {
+  if (isOnRestrictedQ()) {
+    violationCount++;
+    showCheatOverlay();
+  }
+});
+window.addEventListener('beforeunload', e => {
+  if (!submitted) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+function showCheatOverlay() {
+  document.getElementById('cheat-title').textContent = UI('cheatTitle');
+  document.getElementById('cheat-msg').textContent = UI('cheatMsg');
+  document.getElementById('cheat-msg2').textContent = UI('cheatMsg2');
+  document.getElementById('cheat-count').textContent = t('cheatCountTpl', {n: violationCount});
+  document.getElementById('cheat-return-btn').textContent = UI('cheatReturn');
+  const badge = document.getElementById('violation-badge');
+  badge.textContent = t('violBadgeTpl', {n: violationCount});
+  badge.classList.add('show');
+  document.getElementById('cheat-overlay').classList.add('show');
+}
+function dismissCheat() {
+  document.getElementById('cheat-overlay').classList.remove('show');
+}
+
+// ============================================================
+//  SUBMIT
+// ============================================================
+function showSubmitModal() {
+  saveCurrentEssay();
+  const qs = L().questions;
+  let summary = '';
+  qs.forEach((q, i) => {
+    const ans = answers[i];
+    let ansText;
+    if (q.type === 'mcq') {
+      ansText = ans !== null ? `${CIRCLE[ans]} ${q.opts[ans].substring(0,40)}...` : UI('summaryUnanswered');
+    } else {
+      ansText = (typeof ans==='string' && ans.trim()) ? ans.substring(0,60)+(ans.length>60?'...':'') : UI('summaryUnanswered');
+    }
+    summary += t('summaryTpl', {q: q.num, a: ansText}) + '\n';
+  });
+  document.getElementById('sm-title').textContent = UI('smTitle');
+  document.getElementById('sm-msg').textContent = UI('smMsg');
+  document.getElementById('sm-summary').textContent = summary.trim();
+  document.getElementById('sm-cancel').textContent = UI('smCancel');
+  document.getElementById('sm-ok').textContent = UI('smOk');
+  document.getElementById('submit-modal').classList.add('show');
+}
+function hideSubmitModal() {
+  document.getElementById('submit-modal').classList.remove('show');
+}
+function doSubmit() {
+  hideSubmitModal();
+  saveCurrentEssay();
+  submitted = true;
+  submitTime = new Date();
+  clearInterval(timerInterval);
+  const payload = buildPayload();
+  downloadAnswers(payload);
+  showResults();
+  uploadToDrive(payload);
+}
+function autoSubmit() {
+  saveCurrentEssay();
+  submitted = true;
+  submitTime = new Date();
+  document.getElementById('tu-title').textContent = UI('tuTitle');
+  document.getElementById('tu-msg').textContent = UI('tuMsg');
+  document.getElementById('tu-btn').textContent = UI('tuBtn');
+  document.getElementById('timeup-modal').classList.add('show');
+}
+function closeTimeup() {
+  document.getElementById('timeup-modal').classList.remove('show');
+  const payload = buildPayload();
+  downloadAnswers(payload);
+  showResults();
+  uploadToDrive(payload);
+}
+
+// ============================================================
+//  GOOGLE DRIVE ENDPOINT (apps-script.gs 배포 후 URL 입력)
+// ============================================================
+const DRIVE_ENDPOINT = '';  // TODO: apps-script.gs(001용) 배포 후 여기에 새 웹앱 URL 입력
+
+async function uploadToDrive(payload) {
+  if (!DRIVE_ENDPOINT) return 'no-endpoint';
+  setDriveStatus('sending');
+  try {
+    await fetch(DRIVE_ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',      // CORS 우회 (응답은 opaque이나 전송은 정상 처리됨)
+      body: JSON.stringify(payload)
+    });
+    setDriveStatus('ok');
+    return 'ok';
+  } catch (err) {
+    console.warn('Drive upload error:', err);
+    setDriveStatus('fail');
+    return 'fail';
+  }
+}
+
+function setDriveStatus(state) {
+  const el = document.getElementById('drive-status');
+  if (!el) return;
+  const msgs = {
+    sending: { ko:'📤 구글 드라이브 전송 중...', en:'📤 Sending to Google Drive...', zh:'📤 正在上传至Google Drive...' },
+    ok:      { ko:'✅ 구글 드라이브 저장 완료', en:'✅ Saved to Google Drive', zh:'✅ 已保存至Google Drive' },
+    fail:    { ko:'⚠️ 드라이브 전송 실패 (로컬 파일로 대체됨)', en:'⚠️ Drive upload failed (local file saved)', zh:'⚠️ 上传失败（已保存本地文件）' }
+  };
+  const colors = { sending:'#d97706', ok:'#16a34a', fail:'#dc2626' };
+  el.textContent = (msgs[state] || {})[currentLang] || msgs[state].ko;
+  el.style.color = colors[state];
+  el.style.display = 'block';
+}
+
+// ============================================================
+//  ANSWER AUTO-DOWNLOAD
+// ============================================================
+function buildPayload() {
+  const qs = L().questions;
+  const langNames = {ko:'한국어',en:'English',zh:'中文'};
+  const elapsed = 1800 - remainingSeconds;
+  return {
+    meta: {
+      exam: '경영통계 001분반 중간고사',
+      studentId: studentId,
+      studentName: studentName,
+      language: langNames[currentLang],
+      submittedAt: submitTime ? submitTime.toISOString() : null,
+      elapsedSeconds: elapsed,
+      tabViolations: violationCount
+    },
+    answers: qs.map((q, i) => {
+      const ans = answers[i];
+      let ansText;
+      if (q.type === 'mcq') {
+        ansText = ans !== null ? `${CIRCLE[ans]} ${q.opts[ans]}` : '(미응답)';
+      } else {
+        ansText = (typeof ans === 'string' && ans.trim()) ? ans : '(미응답)';
+      }
+      return {
+        num: q.num,
+        chapter: q.chapter,
+        type: q.type,
+        question: q.type === 'mcq' ? q.text : '(서술형 문제)',
+        answer: ansText
+      };
+    })
+  };
+}
+
+function downloadAnswers(payload) {
+  try {
+    const json = JSON.stringify(payload, null, 2);
+    const blob = new Blob(['﻿' + json], {type: 'application/json;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const ts = submitTime
+      ? submitTime.toISOString().substring(0,19).replace('T','_').replace(/:/g,'-')
+      : 'unknown';
+    a.download = `답안_${studentId}_${studentName}_${ts}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch(e) {
+    console.error('답안 다운로드 오류:', e);
+  }
+}
+
+// ============================================================
+//  RESULTS
+// ============================================================
+function showResults() {
+  const qs = L().questions;
+  const elapsed = 1800 - remainingSeconds;
+  const elapsedMin = Math.floor(elapsed/60);
+  const elapsedSec = elapsed % 60;
+  const answeredMcq = answers.slice(0,7).filter(a => a !== null).length;
+  const answeredEssay = answers.slice(7).filter(a => typeof a==='string' && a.trim()!=='').length;
+  const totalAnswered = answeredMcq + answeredEssay;
+  const langNames = {ko:'한국어',en:'English',zh:'中文'};
+
+  document.getElementById('res-title').textContent = UI('resTitle');
+  document.getElementById('res-sub').textContent = UI('resSub');
+  document.getElementById('btn-pdf').textContent = UI('pdfBtn');
+
+  // Info grid
+  const timeStr = submitTime ? submitTime.toLocaleString() : '-';
+  document.getElementById('res-info-grid').innerHTML = `
+    <div class="result-stat"><div class="rl">${UI('resStatId')}</div><div class="rv" style="font-size:15px">${studentId}</div><div style="font-size:13px;color:var(--muted);margin-top:2px">${studentName}</div></div>
+    <div class="result-stat"><div class="rl">${UI('resStatLang')}</div><div class="rv" style="font-size:16px">${langNames[currentLang]}</div></div>
+    <div class="result-stat"><div class="rl">${UI('resStatAnswered')}</div><div class="rv">${totalAnswered}/10</div></div>
+    <div class="result-stat"><div class="rl">${UI('resStatTime')}</div><div class="rv" style="font-size:14px">${timeStr}</div></div>
+    <div class="result-stat"><div class="rl">${UI('resStatViolation')}</div><div class="rv" style="color:${violationCount>0?'var(--danger)':'var(--success)'}">${violationCount}</div></div>`;
+
+  // Questions list
+  let qListHtml = '';
+  qs.forEach((q, i) => {
+    const ans = answers[i];
+    let ansDisplay;
+    if (q.type === 'mcq') {
+      ansDisplay = ans !== null
+        ? `${CIRCLE[ans]} ${escHtml(q.opts[ans])}`
+        : `<span class="unanswered-text">${UI('unanswered')}</span>`;
+    } else {
+      const txt = typeof ans==='string' && ans.trim() ? ans : null;
+      ansDisplay = txt ? escHtml(txt) : `<span class="unanswered-text">${UI('unanswered')}</span>`;
+    }
+    const typeCls = q.type==='mcq' ? 'badge-mcq' : (q.allowExternal ? 'badge-external' : 'badge-essay');
+    const typeLabel = q.type==='mcq' ? UI('badgeMcq') : (q.allowExternal ? UI('badgeExternal') : UI('badgeEssay'));
+    qListHtml += `
+      <div class="result-q">
+        <div class="rq-head">
+          <span class="q-num">${UI('navLabel')} ${q.num}</span>
+          <span class="q-badge ${typeCls}">${typeLabel}</span>
+          <span style="font-size:13px;color:var(--muted)">${escHtml(q.chapter)}</span>
+        </div>
+        <div class="rq-text">${q.type==='mcq' ? escHtml(q.text).substring(0,80)+'...' : ''}</div>
+        <div class="rq-ans">${ansDisplay}</div>
+      </div>`;
+  });
+  document.getElementById('res-q-list').innerHTML = qListHtml;
+  showScreen('result');
+}
+
+// ============================================================
+//  PDF / PRINT
+// ============================================================
+function doPrint() {
+  const qs = L().questions;
+  const timeStr = submitTime ? submitTime.toLocaleString() : '-';
+  const langNames = {ko:'한국어',en:'English',zh:'中文'};
+
+  let printHtml = `
+    <div class="pr-header">
+      <h1>${UI('prHeader')}</h1>
+      <div class="pr-sub">${UI('prSub')}</div>
+    </div>
+    <div class="pr-info">
+      <span>${UI('prInfoId')}: <strong>${studentId}</strong> &nbsp; ${escHtmlPrint(studentName)}</span>
+      <span>${UI('prInfoLang')}: <strong>${langNames[currentLang]}</strong></span>
+      <span>${UI('prInfoTime')}: <strong>${timeStr}</strong></span>
+      <span>${UI('prInfoViol')}: <strong>${violationCount}</strong></span>
+    </div>`;
+
+  qs.forEach((q, i) => {
+    const ans = answers[i];
+    let ansHtml;
+    if (q.type === 'mcq') {
+      ansHtml = ans !== null
+        ? `${CIRCLE[ans]} ${escHtmlPrint(q.opts[ans])}`
+        : `<span class="pr-no-ans">${UI('prNoAns')}</span>`;
+    } else {
+      const txt = typeof ans==='string' && ans.trim() ? ans : null;
+      ansHtml = txt ? escHtmlPrint(txt) : `<span class="pr-no-ans">${UI('prNoAns')}</span>`;
+    }
+
+    let qContentHtml = '';
+    if (q.type === 'mcq') {
+      qContentHtml = `<div class="pr-q-text">${escHtmlPrint(q.text)}</div>`;
+    } else {
+      // Simplified text for print (strip HTML tags)
+      const stripped = q.htmlContent.replace(/<[^>]+>/g, ' ').replace(/\s+/g,' ').trim().substring(0,300);
+      qContentHtml = `<div class="pr-q-text-html">${escHtmlPrint(stripped)}...</div>`;
+    }
+
+    printHtml += `
+      <div class="pr-q">
+        <div class="pr-q-head">${UI('navLabel')} ${q.num}. ${escHtmlPrint(q.chapter)}</div>
+        ${qContentHtml}
+        <div class="pr-ans-label">${UI('prAnsLabel')}</div>
+        <div class="pr-ans">${ansHtml}</div>
+      </div>`;
+  });
+
+  printHtml += `<div class="pr-footer">${UI('prFooter')}</div>`;
+
+  document.getElementById('print-area').innerHTML = printHtml;
+  window.print();
+}
+function escHtmlPrint(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
